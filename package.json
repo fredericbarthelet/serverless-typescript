@@ -4,5 +4,8 @@
   "main": "lib/index.js",
   "repository": "git@github.com:fredericbarthelet/serverless-typescript.git",
   "author": "Frédéric Barthelet <fredericb@theodo.fr>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "typescript-json-schema": "^0.42.0"
+  }
 }
