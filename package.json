@@ -6,6 +6,7 @@
   "author": "Frédéric Barthelet <fredericb@theodo.fr>",
   "license": "MIT",
   "dependencies": {
+    "lodash": "^4.17.15",
     "typescript-json-schema": "^0.42.0"
   }
 }
