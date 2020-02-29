@@ -1,0 +1,73 @@
+version: 2.1
+
+executors:
+  defaults_typescript:
+    working_directory: ~/serverless-typescript
+    docker:
+      - image: circleci/node:12.9
+
+jobs:
+  yarn-install:
+    executor: defaults_typescript
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/serverless-typescript
+      - restore_cache:
+          key: node-modules-cache-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: yarn
+      - save_cache:
+          key: node-modules-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+      - persist_to_workspace:
+          root: ~/serverless-typescript
+          paths:
+            - node_modules
+
+  yarn-test:
+    executor: defaults_typescript
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/serverless-typescript
+      - run:
+          name: Unit test with coverage
+          command: yarn test:coverage
+      - store_artifacts:
+          path: coverage
+
+  yarn-audit:
+    executor: defaults_typescript
+    steps:
+      - checkout
+      # yarn-audit is started with a cron.
+      # As such we cannot get the frontend dependencies from the workspace like we do with the other jobs. We need to re-install them.
+      - run:
+          name: Install dependencies
+          command: yarn
+      - run:
+          name: Check dependencies
+          command: yarn audit-dependencies
+
+workflows:
+  version: 2
+  stack:
+    jobs:
+      - yarn-install
+      - yarn-test:
+          requires:
+              - yarn-install
+  audit-dependencies:
+    triggers:
+      - schedule:
+          # jobs start at 00h00 every Monday, test made for master
+          cron: "0 0 * * 1"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - yarn-audit
