@@ -2,10 +2,13 @@
   "name": "serverless-typescript",
   "version": "0.0.1",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": "git@github.com:fredericbarthelet/serverless-typescript.git",
   "author": "Frédéric Barthelet <fredericb@theodo.fr>",
   "license": "MIT",
   "scripts": {
+    "watch": "tsc --watch",
+    "build": "tsc",
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
@@ -13,6 +16,10 @@
     "typescript-json-schema": "^0.42.0"
   },
   "devDependencies": {
-    "jest": "^25.1.0"
+    "@types/lodash": "^4.14.149",
+    "@types/node": "^13.9.1",
+    "@types/serverless": "^1.18.6",
+    "jest": "^25.1.0",
+    "typescript": "^3.8.3"
   }
 }
