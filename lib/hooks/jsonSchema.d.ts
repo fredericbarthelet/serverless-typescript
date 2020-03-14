@@ -1,2 +1,2 @@
-import Serverless from "serverless";
+import Serverless from 'serverless';
 export declare const main: (serverless: Serverless) => void;

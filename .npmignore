@@ -1,5 +1,7 @@
 .circleci
 .gitignore
+.eslintignore
+.eslintrc.js
 coverage
 node_modules
 src

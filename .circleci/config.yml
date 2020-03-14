@@ -27,6 +27,18 @@ jobs:
           paths:
             - node_modules
 
+  yarn-lint:
+    executor: defaults_typescript
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/serverless-typescript
+      - run:
+          name: Eslint and prettier check
+          command: yarn lint
+      - store_artifacts:
+          path: coverage
+
   yarn-test:
     executor: defaults_typescript
     steps:
@@ -57,6 +69,9 @@ workflows:
   stack:
     jobs:
       - yarn-install
+      - yarn-lint:
+          requires:
+            - yarn-install
       - yarn-test:
           requires:
               - yarn-install
