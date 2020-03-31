@@ -1,5 +1,5 @@
 import Serverless, { Options } from 'serverless';
-import { main } from './hooks/jsonSchema';
+import { inputValidation } from './hooks';
 
 class ServerlessTypescript {
   private serverless: Serverless;
@@ -12,7 +12,7 @@ class ServerlessTypescript {
 
   hooks = {
     'before:package:createDeploymentArtifacts': () => {
-      main(this.serverless);
+      inputValidation(this.serverless);
     },
   };
 }
