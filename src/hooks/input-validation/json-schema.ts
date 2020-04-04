@@ -26,13 +26,7 @@ const getFunctionEventInterfaceName = (
     name: filePath,
     ext: '.ts',
   });
-  // a supprimer
-  if (
-    '/Users/Frederic/Sites/ratp-dev/dait/backend/services/networks-api/functions/app/create.ts' !==
-    resolvedHandlerFile
-  ) {
-    return;
-  }
+
   if (!fs.existsSync(resolvedHandlerFile)) {
     return;
   }
@@ -87,6 +81,7 @@ export const main = (serverless: Serverless) => {
   };
   const program = getProgramFromFiles(
     [
+      // @TODO list all project files to be able to retrieve interface definition whatever the location
       '/Users/Frederic/Sites/ratp-dev/dait/backend/services/networks-api/functions/app/create.ts',
     ],
     compilerOptions,

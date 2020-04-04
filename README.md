@@ -7,6 +7,8 @@ Lambda related configuration should be as close as possible from actually execut
 Target typical lambda structure :
 
 ```ts
+import { parseBody } from 'serverless-typescript/lib/api/input-validation';
+
 interface MyHTTPEvent extends APIGatewayProxyEvent {
   pathParameters: {
     myParam: string;
@@ -22,14 +24,15 @@ interface MyHTTPEvent extends APIGatewayProxyEvent {
  * @Path('GET', '/api/{myParam}/list')
  */
 export const main = async (event: MyHTTPEvent): Promise<APIGatewayProxyResult> => {
-  console.log(event.param1);
+  const input = parseBody(event);
+  console.log(input.param1);
   //...
 };
 ```
 
 ## Highlights
 
-* [AWS] API Gateway HTTP input validation based on typescript interfaces
+* [[AWS] API Gateway HTTP input validation based on typescript interfaces](./docs/input-validation.md)
 * [AWS] API Gateway routing from annotation
 * [AWS] Cognito custom attributes checking on request
 
