@@ -7,23 +7,18 @@ Lambda related configuration should be as close as possible from actually execut
 Target typical lambda structure :
 
 ```ts
-import { parseBody } from 'serverless-typescript/lib/api/input-validation';
+import { Event, parseBody } from 'serverless-typescript/lib/api/input-validation';
 
-interface MyHTTPEvent extends APIGatewayProxyEvent {
-  pathParameters: {
-    myParam: string;
-  }
-  jsonPayload: {
-    param1: string;
-    param2: number;
-  }
+interface MyHTTPBody {
+  param1: string;
+  param2: number;
 }
 
 /*
  * @Security({'custom:role': Role.Superadmin})
  * @Path('GET', '/api/{myParam}/list')
  */
-export const main = async (event: MyHTTPEvent): Promise<APIGatewayProxyResult> => {
+export const main = async (event: Event<MyHTTPBody>): Promise<APIGatewayProxyResult> => {
   const input = parseBody(event);
   console.log(input.param1);
   //...

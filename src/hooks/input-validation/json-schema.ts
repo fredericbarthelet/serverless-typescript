@@ -17,7 +17,7 @@ const HTTP_EVENT_NAME = 'http';
 const getFunctionEventInterfaceName = (
   func: string,
   serverless: Serverless,
-): string | undefined => {
+): { interfaceName: string; resolvedHandlerFile: string } | undefined => {
   const { filePath, functionName } = getFunctionDefinitionInfos(
     serverless.service.getFunction(func),
   );
@@ -36,18 +36,21 @@ const getFunctionEventInterfaceName = (
     fs.readFileSync(resolvedHandlerFile, 'utf-8'),
     functionName,
   );
-  serverless.cli.log(
-    `Found event interface ${interfaceName} for function ${func}`,
-  );
+  if (interfaceName) {
+    serverless.cli.log(
+      `[Serverless-typescript] Found event interface ${interfaceName} for function ${func}`,
+    );
+  }
 
-  return interfaceName;
+  return { interfaceName, resolvedHandlerFile };
 };
 
 const getInterfaceDefinition = (
   interfaceName: string,
   generator: JsonSchemaGenerator,
 ) => {
-  return generator.getSchemaForSymbol(interfaceName);
+  const schema = generator.getSchemaForSymbol(interfaceName);
+  return schema;
 };
 
 export const main = (serverless: Serverless) => {
@@ -61,14 +64,16 @@ export const main = (serverless: Serverless) => {
   });
 
   const httpFunctionsWithInterfaces: string[] = [];
+  const files: string[] = [];
   const functionEventInterfaceNames = _.chain(httpFunctions)
     .map((func: string) => {
-      const functionEventInterfaceName = getFunctionEventInterfaceName(
-        func,
-        serverless,
-      );
+      const {
+        interfaceName: functionEventInterfaceName,
+        resolvedHandlerFile,
+      } = getFunctionEventInterfaceName(func, serverless);
       if (functionEventInterfaceName) {
         httpFunctionsWithInterfaces.push(func);
+        files.push(resolvedHandlerFile);
       }
       return functionEventInterfaceName;
     })
@@ -80,13 +85,11 @@ export const main = (serverless: Serverless) => {
     skipLibCheck: true,
   };
   const program = getProgramFromFiles(
-    [
-      // @TODO list all project files to be able to retrieve interface definition whatever the location
-      '/Users/Frederic/Sites/ratp-dev/dait/backend/services/networks-api/functions/app/create.ts',
-    ],
+    // @TODO list all project files to be able to retrieve interface definition whatever the location
+    files,
     compilerOptions,
   );
-  const generator = buildGenerator(program);
+  const generator = buildGenerator(program, { required: true });
   const functionEventInterfaceDefinitions = _.map(
     functionEventInterfaceNames,
     (functionEventInterfaceName: string) => {
@@ -106,15 +109,12 @@ export const main = (serverless: Serverless) => {
         serverless.service.getAllEventsInFunction(httpFunction),
         (event: any) => {
           if (HTTP_EVENT_NAME in event) {
-            event[HTTP_EVENT_NAME] = {
-              request: {
-                schema: {
-                  'application/json': functionEventInterfaceDefinitions[index],
-                },
+            event[HTTP_EVENT_NAME].request = {
+              schema: {
+                'application/json': functionEventInterfaceDefinitions[index],
               },
             };
           }
-
           return event;
         },
       );

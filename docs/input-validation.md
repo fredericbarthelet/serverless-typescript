@@ -46,19 +46,17 @@ export const main = (event) => {
 
 ```ts
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { parseBody } from 'serverless-typescript/lib/api/input-validation';
+import { Event, parseBody } from 'serverless-typescript/lib/api/input-validation';
 
-interface CreateFunctionInterface extends APIGatewayProxyEvent {
-  jsonBody: {
-    firstname: string;
-    lastname: string;
-  } 
+interface CreateFunctionInterface {
+  firstname: string;
+  lastname: string;
 }
 
-export const main = (event: CreateFunctionInterface) => {
+export const main = (event: Event<CreateFunctionInterface>) => {
   /*
    * Using parseBody method from serverless-typescript, result will be typed
-   * using jsonBody type from interface used to type the handler's event arg
+   * using argument type from Event interface used to type the handler's event arg
    */
   const input = parseBody(event);
   return {
@@ -67,4 +65,4 @@ export const main = (event: CreateFunctionInterface) => {
 }
 ```
 
-This plugin will use interface typing handler's event argument to generate a JSON Schema descriptor and reference it within serverless configuration.
+This plugin will use interface typing handler's event argument to generate a JSON Schema descriptor and reference it within serverless configuration, ensuring proper input validation occurs before triggering the lambda.

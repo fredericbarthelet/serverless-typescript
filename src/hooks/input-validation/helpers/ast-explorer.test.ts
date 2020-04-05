@@ -1,6 +1,11 @@
 import { getHandlerEventArgumentType } from './ast-explorer';
 
 const file = `
+interface Event<Body> {
+  body: string;
+  jsonBody: Body;
+}
+
 interface InterfaceEvent1 {
   content: string;
 }
@@ -11,11 +16,11 @@ interface RandomInterface {
   content: string;
 }
 
-export const arrowFunctionHandler = (event: InterfaceEvent1) => {
+export const arrowFunctionHandler = (event: Event<InterfaceEvent1>) => {
   console.log(event);
 }
 
-export function functionHandler(event: InterfaceEvent2) {
+export function functionHandler(event: Event<InterfaceEvent2>) {
   console.log(event);
 }
 

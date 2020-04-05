@@ -1,7 +1,6 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-interface JsonBodyProxyEvent<T> extends APIGatewayProxyEvent {
+export interface Event<Body> extends APIGatewayProxyEvent {
     body: string;
-    jsonBody: T;
+    jsonBody: Body;
 }
-export declare const parseBody: <T>(event: JsonBodyProxyEvent<T>) => T;
-export {};
+export declare const parseBody: <Body_1>(event: Event<Body_1>) => Body_1;
