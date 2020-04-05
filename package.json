@@ -1,6 +1,6 @@
 {
   "name": "serverless-typescript",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "repository": "git@github.com:fredericbarthelet/serverless-typescript.git",

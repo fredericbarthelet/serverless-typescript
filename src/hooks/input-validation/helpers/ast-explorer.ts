@@ -11,6 +11,15 @@ const getFirstArgumentType = (
   }
 };
 
+const diveInCallExpression = (node: ts.Node): ts.ArrowFunction | undefined => {
+  if (ts.isArrowFunction(node)) {
+    return node;
+  }
+  if (ts.isCallExpression(node)) {
+    return node.forEachChild(diveInCallExpression);
+  }
+};
+
 const nodeVisitorFactory = (targetFunctionName: string) => {
   const nodeVisitor = (node: ts.Node): string => {
     if (
@@ -24,9 +33,9 @@ const nodeVisitorFactory = (targetFunctionName: string) => {
       ts.isVariableDeclaration(node) &&
       targetFunctionName === node.name.getText()
     ) {
-      const initializer = node.initializer;
-      if (ts.isArrowFunction(initializer)) {
-        return getFirstArgumentType(initializer);
+      const arrowFunction = diveInCallExpression(node.initializer);
+      if (arrowFunction) {
+        return getFirstArgumentType(arrowFunction);
       }
     }
 

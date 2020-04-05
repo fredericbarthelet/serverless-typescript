@@ -24,6 +24,22 @@ export function functionHandler(event: Event<InterfaceEvent2>) {
   console.log(event);
 }
 
+export const wrappedArrowFunctionHandler = wrapper('wrapperArgument')(
+  (event: Event<InterfaceEvent1>) => {
+    console.log(event);
+  }
+)
+
+export const multiWrappedArrowFunctionHandler = wrapper1('wrapperArgument')(
+  wrapper2('wrapperArgument')(
+    wrapper3('wrapperArgument')(
+      (event: Event<InterfaceEvent1>) => {
+        console.log(event);
+      }
+    )
+  )
+)
+
 export function notTypedFunctionHandler(event) {
   console.log(event);
 }
@@ -49,6 +65,16 @@ describe('AST explorer', () => {
     expect(getHandlerEventArgumentType('file', file, 'functionHandler')).toBe(
       'InterfaceEvent2',
     );
+    expect(
+      getHandlerEventArgumentType('file', file, 'wrappedArrowFunctionHandler'),
+    ).toBe('InterfaceEvent1');
+    expect(
+      getHandlerEventArgumentType(
+        'file',
+        file,
+        'multiWrappedArrowFunctionHandler',
+      ),
+    ).toBe('InterfaceEvent1');
     expect(
       getHandlerEventArgumentType('file', file, 'notTypedFunctionHandler'),
     ).toBe(undefined);
