@@ -6,7 +6,10 @@ const getFirstArgumentType = (
   const firstArgument = node.parameters[0];
   if (firstArgument?.type) {
     if (ts.isTypeReferenceNode(firstArgument.type)) {
-      return firstArgument.type.typeArguments[0].getText();
+      const typeArguments = firstArgument.type.typeArguments;
+      if (typeArguments) {
+        return firstArgument.type.typeArguments[0].getText();
+      }
     }
   }
 };

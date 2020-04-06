@@ -20,6 +20,10 @@ export const arrowFunctionHandler = (event: Event<InterfaceEvent1>) => {
   console.log(event);
 }
 
+export const arrowFunctionHandlerWithBadTyping = (event: RandomInterface) => {
+  console.log(event);
+}
+
 export function functionHandler(event: Event<InterfaceEvent2>) {
   console.log(event);
 }
@@ -62,6 +66,13 @@ describe('AST explorer', () => {
     expect(
       getHandlerEventArgumentType('file', file, 'arrowFunctionHandler'),
     ).toBe('InterfaceEvent1');
+    expect(
+      getHandlerEventArgumentType(
+        'file',
+        file,
+        'arrowFunctionHandlerWithBadTyping',
+      ),
+    ).toBe(undefined);
     expect(getHandlerEventArgumentType('file', file, 'functionHandler')).toBe(
       'InterfaceEvent2',
     );
