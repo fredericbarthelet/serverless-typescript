@@ -7,6 +7,8 @@
 | Supported provider          | AWS         |
 | Affected service definition | API Gateway |
 
+> **Important information:** This improvement only concerns default `lambda-proxy` integration shipped with Serverless framework. If you specify any other integration type in your function (i.e. `integration: lambda`), the plugin will not generate input validation.
+
 ## Context
 
 Serverless framework allows [HTTP input validation](https://serverless.com/framework/docs/providers/aws/events/apigateway#request-schema-validators) using `request/schema` key with JSON Schema descriptors.

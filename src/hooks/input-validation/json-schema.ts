@@ -58,8 +58,11 @@ export const main = (serverless: Serverless) => {
 
   const httpFunctions = _.filter(functions, (func: string) => {
     const events = serverless.service.getAllEventsInFunction(func);
-    return _.some(events, event => {
-      return HTTP_EVENT_NAME in event;
+    return _.some(events, (event: any) => {
+      if (HTTP_EVENT_NAME in event) {
+        return event[HTTP_EVENT_NAME].integration === 'lambda-proxy'
+      }
+      return false;
     });
   });
 
